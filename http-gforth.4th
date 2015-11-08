@@ -9,6 +9,29 @@ include unix/socket.fs
 buffer-max buffer: buffer   \ receiving buffer
 variable buffer-len         \ chars in receiving buffer
 
+\ some helpers
+: str>num ( c-addr n -- n )
+    2>r 0 0 2r> >number 2drop drop ;
+
+: str-to-lower ( c-addr n -- c-addr n )
+    2dup bounds ?do
+        i c@ dup [CHAR] A >= over [CHAR] Z <= and if
+            $20 + i c!
+        else
+            drop
+        then
+    loop ;
+
+: skip-bl ( c-addr n -- c-addr 2 n2 )
+    2>r \ save start address
+    2r@ bounds do
+        i c@ bl <> if
+            i leave
+        then
+    loop 2r>
+    >r over swap - r> \ number of skipped blanks
+    swap - ; \ change length
+
 \ data in receiving socket
 : skey? ( socket -- f )
     buffer-len @ 0<> ;
@@ -38,7 +61,7 @@ variable buffer-len         \ chars in receiving buffer
         drop
     repeat nip ;
 
-: sline ( c-addr n socket -- n )
+: sline ( c-addr n socket -- c-addr n )
     -rot    \ save socket
     over >r \ save buffer
     bounds do
@@ -49,14 +72,47 @@ variable buffer-len         \ chars in receiving buffer
     loop
     r@ - r> swap ; \ return buffer with read size
 
+\ I might fall for locals some day, this is far easier than plain sline
+: sline-until { c-addr-buf n-buf socket c-until -- c-addr n }
+    c-addr-buf n-buf bounds do
+        socket skey-no\r dup c-until = over 10 = or if
+            drop i leave
+        then
+        i c!
+    loop
+    c-addr-buf - c-addr-buf swap ;
+
+80 constant header-max
+header-max buffer: header-buffer
+
+: header-buf ( s -- c-addr n s )
+    >r header-buffer header-max r> ;
+
+: header-line ( s -- c-addr n )
+    header-buf sline ;
+
+: header-name ( s -- c-addr n )
+    header-buf [CHAR] : sline-until str-to-lower ;
+
+: http-status ( s -- n )
+    header-line s"  " search if
+        3 >= if
+            1+ 3 str>num
+        else \ return one on invalid string length
+            1
+        then
+    else \ return zero if no space was found
+        0
+    then ;
+
 80 constant slines-max
 slines-max buffer: slines-buffer
 : slines ( socket -- )
-    1000 0 do
-        dup >r slines-buffer slines-max r> sline ." LINE:" type cr
+    101 0 do
+        dup >r slines-buffer slines-max r> sline ." LINE:" i . type cr
     loop drop ;
 
-: http-open ( c-addr-path n-path c-addr-host n-host -- c-addr-response n-response )
+: http-open ( c-addr-path n-path c-addr-host n-host -- socket )
     2dup \ save host
     http-port open-socket >r
         s" GET " r@ write-socket    \ start get request
@@ -67,12 +123,53 @@ slines-max buffer: slines-buffer
         r>
     ;
 
-s" /" s" localhost.theforth.net" http-open constant s
-s slines
+\ parse all headers and return content length
+: http-length ( s -- n-content-length )
+    ~~
+    locals| length |
+    0 to length
+    begin
+        dup header-name
+        ~~
+        ." HEADER:" 2dup type
+        ~~
+        dup 0<>
+    while
+        s" content-length" compare 0= if
+            dup header-line 2dup type
+            skip-bl str>num to length
+            ." CONTENT:" length .
+        else
+            dup header-line 2drop
+        then
+    repeat 2drop length ~~ ;
+
+: http-slurp ( c-addr-path n-path c-addr-host n-host -- c-addr-response n-response n-status )
+    http-open
+    dup http-status >r
+
+    
+    \ r@ header-name type
+    dup http-length .
+
+
+    \ close-socket r> \ close socket, put http-status on tos
+    r>
+    ;
+
+
+s" /" s" localhost.theforth.net" http-slurp . drop
+
+
+
+\ s" /" s" localhost.theforth.net" http-open constant s
+\ s slines
+\ s http-status .
 
 \ s" 0123456789" 2constant x
 
 \ x s sline
+
 
 ." RDY!" cr 
 
