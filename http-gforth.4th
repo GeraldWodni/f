@@ -160,9 +160,4 @@ slines-max buffer: slines-buffer
     ;
 
 
-s" /" s" localhost.theforth.net" http-slurp
-." AFTER SLURP:
-.s
-
-." RDY!" cr 
-
+\ s" /" s" localhost.theforth.net" http-slurp ." AFTER SLURP: .s

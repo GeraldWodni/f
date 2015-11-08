@@ -11,14 +11,20 @@
 : http-gforth if s" http-gforth.4th" required then ;
 [DEFINED] gforth http-gforth
 
-bye
-
 \ check if the http-client is now defined, if not there isn't much we can do about it :(
 : try-n-die ( f -- )
     0= if cr ." HTTP-client not implemented, system currently not supported" quit then ;
 [DEFINED] http-slurp try-n-die
 
 ." WORKING!"
+
+\ list all packages
+: fall ( -- )
+    s" /api/packages/text" s" localhost.theforth.net" http-slurp dup 201 <> if
+        cr ." HTTP-Error: " . cr
+    else
+        drop
+    then cr type cr ;
 
 \ --- Search ---
 
