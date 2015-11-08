@@ -6,7 +6,7 @@ include unix/socket.fs
 
 8000 constant http-port
 1 constant buffer-max       \ receiving buffer length ( yes we only care about single chars )
-buffer-max buffer: buffer   \ receiving buffer
+buffer-max buffer: rbuffer  \ receiving buffer
 variable buffer-len         \ chars in receiving buffer
 
 \ some helpers
@@ -38,7 +38,7 @@ variable buffer-len         \ chars in receiving buffer
 
 \ attempt to refill
 : (srefill) ( socket -- )
-    buffer buffer-max read-socket nip buffer-len ! ;
+    rbuffer buffer-max read-socket nip buffer-len ! ;
 
 \ make sure we refill and get at least 1 char
 : srefill ( socket -- )
@@ -50,7 +50,7 @@ variable buffer-len         \ chars in receiving buffer
 
 \ read char from socket
 : skey ( socket -- c )
-    srefill buffer c@
+    srefill rbuffer c@
     0 buffer-len ! ;
 
 \ strip \r
@@ -125,52 +125,44 @@ slines-max buffer: slines-buffer
 
 \ parse all headers and return content length
 : http-length ( s -- n-content-length )
-    ~~
+    0
     locals| length |
-    0 to length
     begin
         dup header-name
-        ~~
-        ." HEADER:" 2dup type
-        ~~
         dup 0<>
     while
         s" content-length" compare 0= if
-            dup header-line 2dup type
+            dup header-line
             skip-bl str>num to length
-            ." CONTENT:" length .
         else
             dup header-line 2drop
         then
-    repeat 2drop length ~~ ;
+    repeat 2drop drop length ;
+
+: http-body ( socket c-addr n -- )
+    bounds ?do
+        dup skey i c!
+    loop drop ;
 
 : http-slurp ( c-addr-path n-path c-addr-host n-host -- c-addr-response n-response n-status )
     http-open
     dup http-status >r
 
+    >r \ socket
     
-    \ r@ header-name type
-    dup http-length .
+    r@ http-length
+    dup allocate throw swap \ c-addr n-len
 
+    2dup r@ -rot http-body  \ read body into buffer
 
-    \ close-socket r> \ close socket, put http-status on tos
-    r>
+    r> close-socket
+    r> \ status
     ;
 
 
-s" /" s" localhost.theforth.net" http-slurp . drop
-
-
-
-\ s" /" s" localhost.theforth.net" http-open constant s
-\ s slines
-\ s http-status .
-
-\ s" 0123456789" 2constant x
-
-\ x s sline
-
+s" /" s" localhost.theforth.net" http-slurp
+." AFTER SLURP:
+.s
 
 ." RDY!" cr 
 
-\ bye
