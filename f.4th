@@ -19,17 +19,35 @@
 include vt100.4th
 include api.4th
 
-\ list all packages
-: fall ( -- )
-    s" /api/packages/forth" s" theforth.net" http-slurp dup 200 <> if
+: freet free throw ;
+
+\ perform http-get on url and evaluate result
+: api-get ( c-addr n xt-ok xt-err -- )
+    >r >r
+    s" theforth.net" http-slurp dup 200 <> if
         cr ." HTTP-Error: " . cr
-        over -rot type free
+        over -rot rdrop r> execute freet
     else
         drop \ response code
         cr
-        over -rot evaluate \ free
-    then
-    ;
+        over -rot r> execute rdrop freet
+    then ;
 
-\ --- Search ---
+: api-get-eval ( c-addr n -- )
+    ['] evaluate ['] type api-get ;
+
+\ list all packages
+: fall ( -- )
+    s" /api/packages/forth" api-get-eval ;
+
+\ search package name and descriptions
+: fsearch ( <parse-name> -- )
+    s" /api/packages/search/forth/" parse-name ?dup 0= if
+        2drop drop
+        vt-red ." ERROR: no string given" vt-color-off
+    else
+        $+
+        over -rot api-get-eval
+        freet \ free constructed url
+    then ;
 

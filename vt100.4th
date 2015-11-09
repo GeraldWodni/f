@@ -24,6 +24,7 @@
 : vt-white      s" 37" <esc>[m ;
 : vt-magenta    s" 35" <esc>[m ;
 : vt-cyan       s" 36" <esc>[m ;
+: vt-red        s" 31" <esc>[m ;
 
 \ backgrounds
 : vt-bg-off   s" 49m" <esc>[ ;
