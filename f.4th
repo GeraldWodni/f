@@ -16,15 +16,20 @@
     0= if cr ." HTTP-client not implemented, system currently not supported" quit then ;
 [DEFINED] http-slurp try-n-die
 
-." WORKING!"
+include vt100.4th
+include api.4th
 
 \ list all packages
 : fall ( -- )
-    s" /api/packages/text" s" localhost.theforth.net" http-slurp dup 201 <> if
+    s" /api/packages/forth" s" theforth.net" http-slurp dup 200 <> if
         cr ." HTTP-Error: " . cr
+        over -rot type free
     else
-        drop
-    then cr type cr ;
+        drop \ response code
+        cr
+        over -rot evaluate \ free
+    then
+    ;
 
 \ --- Search ---
 
