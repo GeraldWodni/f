@@ -41,13 +41,29 @@ include api.4th
     s" /api/packages/forth" api-get-eval ;
 
 \ search package name and descriptions
-: fsearch ( <parse-name> -- )
-    s" /api/packages/search/forth/" parse-name ?dup 0= if
-        2drop drop
+: api-parse-name ( c-addr n xt <parse-name> -- )
+    >r parse-name ?dup 0= if
+        2drop drop rdrop
         vt-red ." ERROR: no string given" vt-color-off
     else
         $+
-        over -rot api-get-eval
+        over -rot r> execute
         freet \ free constructed url
     then ;
+
+: fsearch ( <parse-name> -- )
+    s" /api/packages/search/forth/"
+    ['] api-get-eval api-parse-name ;
+
+\ display information about a package
+: finfo-err ( c-addr n -- )
+    2drop vt-red s" ERROR: not found" ;
+: finfo-ok ( c-addr n -- )
+    vt-magenta type vt-color-off ;
+: finfo-get ( c-addr n -- )
+    ['] finfo-ok ['] finfo-err api-get ;
+
+: finfo ( <parse-name> -- )
+    s" /api/packages/info/forth/"
+    ['] finfo-get api-parse-name ;
 
