@@ -57,7 +57,7 @@ include api.4th
 
 \ display information about a package
 : finfo-err ( c-addr n -- )
-    2drop vt-red s" ERROR: not found" ;
+    2drop vt-red ." ERROR: not found" vt-color-off ;
 : finfo-ok ( c-addr n -- )
     vt-magenta type vt-color-off ;
 : finfo-get ( c-addr n -- )
