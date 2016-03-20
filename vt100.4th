@@ -10,7 +10,7 @@
 : <esc>[ ( c-addr n -- )
     <esc> [CHAR] [ emit type ;
 : <esc>[m ( c-addr n -- )
-    <esc> [CHAR] [ emit type [CHAR] m emit ;
+    <esc>[ [CHAR] m emit ;
 
 \ font
 : vt-bold

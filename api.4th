@@ -5,6 +5,8 @@
 
 15 constant name-length
 
+\ -- package info --
+
 \ TODO : load wordlist for packages-response
 : forth-packages ;
 
@@ -21,5 +23,28 @@
     \ description
     vt-default
     10 parse type
+    vt-color-off
+    cr ;
+
+\ -- package download --
+
+: package-content ;
+: end-package-content ;
+
+: directory ( <parse-directory> -- )
+    vt-bold vt-magenta
+    ." directory "
+    vt-default
+    parse-name type
+    vt-color-off
+    cr ;
+
+: file ( <parse-filename> <parse-link> -- )
+    vt-bold vt-magenta
+    ." file "
+    vt-default
+    parse-name type
+    vt-bold ." --> " vt-default
+    parse-name type
     vt-color-off
     cr ;

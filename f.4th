@@ -67,3 +67,7 @@ include api.4th
     s" /api/packages/info/forth/"
     ['] finfo-get api-parse-name ;
 
+\ download a package
+: fget ( <parse-name> <parse-version> -- )
+    ;
+
