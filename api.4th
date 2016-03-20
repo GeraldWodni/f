@@ -28,8 +28,17 @@
 
 \ -- package download --
 
-: package-content ;
-: end-package-content ;
+: package-content ( <parse-name> <parse-version> -- )
+    vt-magenta vt-bold ." package-content: "
+    vt-default
+    parse-name type
+    ."  v:"
+    parse-name type cr
+    vt-color-off ;
+
+: end-package-content
+    vt-magenta vt-bold ." end-package-content" cr
+    vt-default vt-color-off ;
 
 : directory ( <parse-directory> -- )
     vt-bold vt-magenta
@@ -44,7 +53,7 @@
     ." file "
     vt-default
     parse-name type
-    vt-bold ." --> " vt-default
+    vt-bold ."  -> " vt-default
     parse-name type
     vt-color-off
     cr ;

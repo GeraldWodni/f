@@ -68,6 +68,42 @@ include api.4th
     ['] finfo-get api-parse-name ;
 
 \ download a package
-: fget ( <parse-name> <parse-version> -- )
+
+\ add name and version separated by to prefix '/'
+: $prefix$name$version+ ( c-addr-name n-name c-addr-version n-version c-addr-prefix n-prefix -- c-addr4 n4 )
+    locals| n-prefix c-prefix n-version c-version n-name c-name |
+    n-name n-version + n-prefix + 1+ dup            \ total length
+    allocate throw                                  \ receiving buffer
+    swap
+    2>r
+    c-prefix 2r@ drop n-prefix cmove                \ write prefix
+    c-name 2r@ drop n-prefix + >r r@ n-name cmove   \ write name
+    [CHAR] / r> n-name + >r r@ c!                   \ write slash
+    c-version r> 1+ n-version cmove                 \ write version
+    2r> ; \ final path
+
+\ search package name and descriptions
+: api-parse-name-version ( c-addr n xt <parse-name> <parse-version> -- )
+    >r 2>r parse-name ?dup 0= if \ parse name
+        drop rdrop 2rdrop
+        vt-red ." ERROR: no name given" vt-color-off
+    else
+        parse-name ?dup 0= if \ parse version
+            2drop drop rdrop 2rdrop
+            vt-red ." ERROR: no version given" vt-color-off
+        else
+            2r>
+            $prefix$name$version+
+            over -rot r> execute
+            freet \ free constructed url
+        then
+    then ;
+
+: fget-get ( c-addr-path n-path -- )
+    ." FGET" cr
+    type cr
     ;
 
+: fget ( <parse-name> <parse-version> -- )
+    s" /api/packages/content/forth/"
+    ['] api-get-eval api-parse-name-version ;
