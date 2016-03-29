@@ -8,13 +8,14 @@
 \ until the major systems support us, we are stuck with this ugly include mess:
 
 \ gforth
-: http-gforth if s" http-gforth.4th" required then ;
-[DEFINED] gforth http-gforth
+: compat-gforth if s" compat-gforth.4th" required then ;
+[DEFINED] gforth compat-gforth
+
+: try-n-die" ( f parse-until-" -- )
+    >r [CHAR] " parse r> 0= if cr ." SYSTEM NOT SUPPORTED, " type quit else 2drop then ;
 
 \ check if the http-client is now defined, if not there isn't much we can do about it :(
-: try-n-die ( f -- )
-    0= if cr ." HTTP-client not implemented, system currently not supported" quit then ;
-[DEFINED] http-slurp try-n-die
+[DEFINED] http-slurp try-n-die" HTTP-client not implemented"
 
 \ constants
 : api-host s" theforth.net" ;
