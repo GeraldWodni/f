@@ -21,7 +21,7 @@
     \ space
     name-length r> - 1 max spaces
     \ description
-    vt-default
+    vt-normal
     10 parse type
     vt-color-off
     cr ;
@@ -30,7 +30,7 @@
 
 : package-content ( <parse-name> <parse-version> -- )
     vt-magenta vt-bold ." package-content: "
-    vt-default
+    vt-normal
     parse-name type
     ."  v:"
     parse-name type cr
@@ -38,12 +38,12 @@
 
 : end-package-content
     vt-magenta vt-bold ." end-package-content" cr
-    vt-default vt-color-off ;
+    vt-default ;
 
 : directory ( <parse-directory> -- )
     vt-bold vt-magenta
     ." directory "
-    vt-default
+    vt-normal
     parse-name type
     vt-color-off
     cr ;
@@ -51,9 +51,23 @@
 : file ( <parse-filename> <parse-link> -- )
     vt-bold vt-magenta
     ." file "
-    vt-default
-    parse-name type
-    vt-bold ."  -> " vt-default
-    parse-name type
-    vt-color-off
-    cr ;
+    parse-name \ parse filename
+    parse-name \ parse link
+    2over
+    vt-normal
+    type bl emit
+
+    api-host http-slurp 200 = if
+        vt-blue type
+        vt-bold vt-yellow
+        ." > "
+        vt-magenta
+        \ TODO : save into file, oposite of slurp, burp?
+        type
+    else
+        vt-bold vt-red
+        . type
+        2drop
+    then
+
+    vt-default cr ;

@@ -16,15 +16,19 @@
     0= if cr ." HTTP-client not implemented, system currently not supported" quit then ;
 [DEFINED] http-slurp try-n-die
 
-include vt100.4th
-include api.4th
+\ constants
+: api-host s" theforth.net" ;
+
+include vt100.4th   \ colors
+include api.4th     \ evaluated words within api-responses
+
 
 : freet free throw ;
 
 \ perform http-get on url and evaluate result
 : api-get ( c-addr n xt-ok xt-err -- )
     >r >r
-    s" theforth.net" http-slurp dup 200 <> if
+    api-host http-slurp dup 200 <> if
         cr ." HTTP-Error: " . cr
         over -rot rdrop r> execute freet
     else
