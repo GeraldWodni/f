@@ -161,3 +161,13 @@ slines-max buffer: slines-buffer
 
 
 \ s" /" s" localhost.theforth.net" http-slurp ." AFTER SLURP: .s
+
+
+\ directories
+-529 constant error-exists
+
+: create-directories ( c-addr n -- ior )
+    $1FF mkdir-parents      \ add mask
+    dup error-exists = if   \ ignore error-exists
+        drop 0
+    then ;

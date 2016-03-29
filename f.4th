@@ -3,7 +3,8 @@
 
 \ --- HTTP Client ---
 \ if you want your system to support f, define the following words:
-\ http-slurp ( c-addr len -- c-addr len )
+\ http-slurp ( c-addr-path n-path c-addr-host n-host -- c-addr-response n-response n-status )
+\ create-directories ( c-addr n -- ior ) create recurive directories
 
 \ until the major systems support us, we are stuck with this ugly include mess:
 
@@ -16,15 +17,38 @@
 
 \ check if the http-client is now defined, if not there isn't much we can do about it :(
 [DEFINED] http-slurp try-n-die" HTTP-client not implemented"
+[DEFINED] create-directories try-n-die" create-directories not implemented"
 
 \ constants
 : api-host s" theforth.net" ;
+: default-fdirectory s" ./forth-packages/" ;
 
+\ configurable variables
+2variable fdirectory                \ prefix for packages, must end with '/'
+default-fdirectory fdirectory 2!
+
+
+\ utils
+
+\ add name and version separated by to prefix '/'
+: $prefix$name$version+ ( c-addr-name n-name c-addr-version n-version c-addr-prefix n-prefix -- c-addr4 n4 )
+    locals| n-prefix c-prefix n-version c-version n-name c-name |
+    n-name n-version + n-prefix + 1+ dup            \ total length
+    allocate throw                                  \ receiving buffer
+    swap
+    2>r
+    c-prefix 2r@ drop n-prefix cmove                \ write prefix
+    c-name 2r@ drop n-prefix + >r r@ n-name cmove   \ write name
+    [CHAR] / r> n-name + >r r@ c!                   \ write slash
+    c-version r> 1+ n-version cmove                 \ write version
+    2r> ; \ final path
+
+\ free and throw :P
+: freet free throw ;
+
+\ colors & api-response words
 include vt100.4th   \ colors
 include api.4th     \ evaluated words within api-responses
-
-
-: freet free throw ;
 
 \ perform http-get on url and evaluate result
 : api-get ( c-addr n xt-ok xt-err -- )
@@ -73,19 +97,6 @@ include api.4th     \ evaluated words within api-responses
     ['] finfo-get api-parse-name ;
 
 \ download a package
-
-\ add name and version separated by to prefix '/'
-: $prefix$name$version+ ( c-addr-name n-name c-addr-version n-version c-addr-prefix n-prefix -- c-addr4 n4 )
-    locals| n-prefix c-prefix n-version c-version n-name c-name |
-    n-name n-version + n-prefix + 1+ dup            \ total length
-    allocate throw                                  \ receiving buffer
-    swap
-    2>r
-    c-prefix 2r@ drop n-prefix cmove                \ write prefix
-    c-name 2r@ drop n-prefix + >r r@ n-name cmove   \ write name
-    [CHAR] / r> n-name + >r r@ c!                   \ write slash
-    c-version r> 1+ n-version cmove                 \ write version
-    2r> ; \ final path
 
 \ search package name and descriptions
 : api-parse-name-version ( c-addr n xt <parse-name> <parse-version> -- )
