@@ -1,6 +1,6 @@
 \ HTTP client implementation for GForth
 \ This is a very hacky implementation, but it works.
-\ (c)copyright 2015 by Gerald Wodni <gerald.wodni@gmail.com>
+\ (c)copyright 2015-2016 by Gerald Wodni <gerald.wodni@gmail.com>
 
 include unix/socket.fs
 

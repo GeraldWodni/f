@@ -1,5 +1,5 @@
 \ Forth package manager for theForthNet
-\ (c)copyright 2015 by Gerald Wodni <gerald.wodni@gmail.com>
+\ (c)copyright 2015-2016 by Gerald Wodni <gerald.wodni@gmail.com>
 
 \ --- HTTP Client ---
 \ if you want your system to support f, define the following words:
@@ -114,11 +114,6 @@ include api.4th     \ evaluated words within api-responses
             freet \ free constructed url
         then
     then ;
-
-: fget-get ( c-addr-path n-path -- )
-    ." FGET" cr
-    type cr
-    ;
 
 : fget ( <parse-name> <parse-version> -- )
     s" /api/packages/content/forth/"

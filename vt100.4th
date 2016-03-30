@@ -1,5 +1,5 @@
 \ VT100 escape command helpers
-\ (c)copyright 2015 by Gerald Wodni <gerald.wodni@gmail.com>
+\ (c)copyright 2015-2016 by Gerald Wodni <gerald.wodni@gmail.com>
 
 \ TODO : implement in 2 tables (color - no color), implement toggle switch
 \ sequence helpers

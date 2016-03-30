@@ -1,5 +1,5 @@
 \ Forth package manager api
-\ (c)copyright 2015 by Gerald Wodni <gerald.wodni@gmail.com>
+\ (c)copyright 2015-2016 by Gerald Wodni <gerald.wodni@gmail.com>
 
 \ TODO : wrap this into a vocubulary, add sub-vacabularies for each response-type for maximum security
 

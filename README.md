@@ -25,16 +25,19 @@ As f is now a plain package, updating it to the latest version is as easy as typ
 
 
 ## Usage / Words
-### fall ( -- )
+### `fall ( -- )`
 list all packages
 
-### finfo ( \<parse-name> -- )
+### `fsearch ( <parse-needle> -- )`
+list all packages which contain *needle* in their name or description 
+
+### `finfo ( <parse-name> -- )`
 display information about a package
 
 **Example** display the readme of the latest version of stringstack:
 `finfo stringstack`
 
-### fget ( \<parse-name> \<parse-version> -- )
+### `fget ( <parse-name> <parse-version> -- )`
 download a package into *fdirectory*
 
 **Example** download the most recent version of euler303:
