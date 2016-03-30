@@ -36,33 +36,53 @@
     2over type
     ."  v:"
     2dup type
-    cr
 
     fdirectory 2@
     $prefix$name$version+
 
-    vt-color-off ;
+    \ create package directory
+    vt-bold
+    2dup create-directories ?dup if
+        vt-red ." ERROR" vt-default throw
+    else
+        vt-green ." ok"
+    then
+    vt-default cr ;
 
 : end-package-content ( c-addr-directory n-directory -- )
     drop freet
     vt-magenta vt-bold ." end-package-content" cr
     vt-default ;
 
+\ TODO: hide in final wordset
+\ merge prefix and path, keep copy of address for easy free
+: _merge-path ( c-addr-pre n-pre c-addr-path n-path -- c-addr-pre n-pre c-addr-merged c-addr-merged n-merged )
+    2over 2swap \ copy prefix
+    $+          \ add strings
+    over -rot ; \ save address
+
 : directory ( <parse-directory> -- )
     vt-bold vt-magenta
     ." directory "
     vt-normal
     parse-name \ parse dirname
-    2dup type
+    2dup type bl emit
 
-    vt-white
-    bl emit
-    2over 2swap $+
-    2dup type
-    drop freet
+    vt-bold
+    _merge-path create-directories swap freet
+    ?dup if
+        vt-red  ." ERROR" vt-default throw
+    else
+        vt-green  ." ok"
+    then
+    vt-default cr ;
 
-    vt-color-off
-    cr ;
+\ TODO: hide in final wordset
+\ write content into file
+: _burp-file ( c-addr-content n-content c-addr-filename n-filename -- )
+    w/o create-file throw >r
+    r@ write-file throw
+    r> close-file throw ;
 
 : file ( <parse-filename> <parse-link> -- )
     vt-bold vt-magenta
@@ -74,22 +94,16 @@
     type bl emit
 
     api-host http-slurp 200 = if
-        vt-white
-        2>r rdrop rdrop \ TODO: save content instead of dumping it
+        vt-default
+        2>r \ content
+        _merge-path 2r> 2swap \ get merged path and content
+        _burp-file \ store in file
+        freet
 
-        \ get path
-        2over 2swap $+
-        2dup type
-        drop freet
-
-        vt-bold vt-yellow
-        ." > "
-        vt-magenta
-        \ TODO : save into file, oposite of slurp, burp?
+        vt-bold vt-green ." ok"
     else
         vt-bold vt-red
         . type
         2drop
     then
-
     vt-default cr ;

@@ -20,7 +20,7 @@
 [DEFINED] create-directories try-n-die" create-directories not implemented"
 
 \ constants
-: api-host s" localhost.theforth.net" ;
+: api-host s" theforth.net" ;
 : default-fdirectory s" ./forth-packages/" ;
 
 \ configurable variables
@@ -123,5 +123,3 @@ include api.4th     \ evaluated words within api-responses
 : fget ( <parse-name> <parse-version> -- )
     s" /api/packages/content/forth/"
     ['] api-get-eval api-parse-name-version ;
-
-fget euler303 x.x.x
