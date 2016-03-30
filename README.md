@@ -7,6 +7,7 @@ Download the zipfile, extract it and use *fget* to install the package itself.
 It will be the only package with a cumbersome installation ;)
 
 Step by step:
+
 1. Download the [package](https://theforth.net/package/f/current.zip)
    `wget https://theforth.net/package/f/current.zip`
 2. Extract the archive
@@ -19,6 +20,7 @@ Step by step:
    `rm -Rf f`
 
 From now on you can interface with f just by including `forth-packages/f/x.x.x/f.4th`.
+
 As f is now a plain package, updating it to the latest version is as easy as typing `fget f x.x.x`.
 
 
@@ -49,7 +51,7 @@ Read more about the version numbering scheme in the [package-guidlines](/guideli
 Holds the prefix-path for packages.
 Defaults to *default-fdirectory ( -- c-addr n )* which yields `./forth-packages/`.
 
-Normally each project will contains its own dependencies in the folder `./forth-packages`.
+Normally each project contains its own dependencies in the folder `./forth-packages`.
 This makes it very easy to handle and ship a project/package, as everything is contained inside the project folder.
 It will also allow easy inclusion of the packages as there is no path-magic involved.
 
