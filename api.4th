@@ -52,7 +52,15 @@
     vt-bold vt-magenta
     ." directory "
     vt-normal
-    parse-name type
+    parse-name \ parse dirname
+    2dup type
+
+    vt-white
+    bl emit
+    2over 2swap $+
+    2dup type
+    drop freet
+
     vt-color-off
     cr ;
 

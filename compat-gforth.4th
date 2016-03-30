@@ -4,7 +4,7 @@
 
 include unix/socket.fs
 
-80 constant http-port
+8000 constant http-port
 1 constant buffer-max       \ receiving buffer length ( yes we only care about single chars )
 buffer-max buffer: rbuffer  \ receiving buffer
 variable buffer-len         \ chars in receiving buffer
