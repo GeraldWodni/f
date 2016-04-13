@@ -118,3 +118,32 @@ include api.4th     \ evaluated words within api-responses
 : fget ( <parse-name> <parse-version> -- )
     s" /api/packages/content/forth/"
     ['] api-get-eval api-parse-name-version ;
+
+
+\ include a package
+: finclude-parse-package.4th ( c-addr n -- )
+    2dup s" /package.4th" $+ 2dup
+    2dup type cr
+    ~~
+    finclude-words included
+    if
+        vt-green vt-bold
+        ." Main File:" 2dup type
+        vt-default
+        included
+    else
+        vt-red vt-bold
+        ." No main file found!"
+        vt-default
+    then
+    ~~
+    drop freet
+    2drop ;
+
+: finclude ( <parse-name> <parse-version> -- )
+    fdirectory 2@
+    ['] finclude-parse-package.4th api-parse-name-version ;
+
+
+\ finclude stringstack x.x.x
+\ finclude euler303 1.0.0

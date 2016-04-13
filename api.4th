@@ -107,3 +107,42 @@
         2drop
     then
     vt-default cr ;
+
+\ parse name and immediately drop it
+: parse-drop ( <parse-name> -- )
+    parse-name 2drop ;
+: parse-line ( <parse-line> -- c-addr n )
+    10 parse ;
+: parse-line-drop ( <parse-line> -- )
+    parse-line 2drop ;
+
+\ join two paths
+: path-join ( c-addr1 n1 caddr2 n2 -- caddr3 n3 )
+    locals| n2 c-addr2 n1 c-addr1 |
+    n1 n2 + 1+ dup allocate throw >r
+    c-addr1 r@ n1 cmove         \ 1st path
+    [CHAR] / r@ n1 + c!         \ separator
+    c-addr2 r@ n1 + 1+ n2 cmove \ 2nd path
+    r> swap ;
+
+    \ TODO: make path-join work and use it in "Main Found"
+    \ TODO: free path afterwards
+
+\ finclude package.4th handling
+vocabulary finclude-words
+also finclude-words definitions
+    : forth-package ( -- f )
+        0 ;
+    : key-value ( <parse-name> <parse-line> -- )
+        parse-name s" main" compare 0= if
+            drop \ drop false-flag
+            2over parse-name path-join \ get path
+            -1 \ add true flag
+        else
+            parse-line-drop
+        then ;
+    : key-list ( <parse-name> <parse-line> -- )
+        parse-line-drop ; \ no need to inspect any lines in finlude
+    : end-forth-package ; ( -- )
+previous definitions
+
