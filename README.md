@@ -46,6 +46,16 @@ download a package into *fdirectory*
 **Example** download a specific version:
 `fget euler303 1.0.0`
 
+### `finclude ( <parse-name> <parse-version> -- )`
+include the main file of a package (if one is defined)
+
+**Example** include a specific version of the stringstack:
+`finclude stringstack 1.0.3`
+
+**Limitation** currently finclude does not support the N.M.x-numbering sceme, please use the *fget-ed* version explicitly
+
+
+
 Read more about the version numbering scheme in the [package-guidlines](/guidelines)
 
 
