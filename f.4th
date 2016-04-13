@@ -123,20 +123,21 @@ include api.4th     \ evaluated words within api-responses
 \ include a package
 : finclude-parse-package.4th ( c-addr n -- )
     2dup s" /package.4th" $+ 2dup
-    2dup type cr
-    ~~
-    finclude-words included
-    if
-        vt-green vt-bold
-        ." Main File:" 2dup type
-        vt-default
+    also finclude-words
         included
+    previous
+    if
+        vt-magenta vt-bold
+        ." package main file: " vt-normal 2dup type cr
+        vt-default
+        2swap 2>r 2swap 2>r rot >r \ super ugly way to keep datastack empty during include
+        included
+        r> 2r> 2r> \ restore datastack, any items pushed by the main file remain beneath
     else
         vt-red vt-bold
         ." No main file found!"
         vt-default
     then
-    ~~
     drop freet
     2drop ;
 
