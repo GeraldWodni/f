@@ -12,6 +12,10 @@
 : compat-gforth if s" compat-gforth.4th" required then ;
 [DEFINED] gforth compat-gforth
 
+\ vfx
+: compat-vfx    if s" compat-vfx.4th"    required then ;
+[DEFINED] vfxforth compat-vfx
+
 : try-n-die" ( f parse-until-" -- )
     >r [CHAR] " parse r> 0= if cr ." SYSTEM NOT SUPPORTED, " type quit else 2drop then ;
 
