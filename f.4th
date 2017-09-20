@@ -36,7 +36,7 @@ default-fdirectory fdirectory 2!
 
 \ add name and version separated by to prefix '/'
 : $prefix$name$version+ ( c-addr-name n-name c-addr-version n-version c-addr-prefix n-prefix -- c-addr4 n4 )
-    locals| n-prefix c-prefix n-version c-version n-name c-name |
+    {: c-name n-name c-version n-version c-prefix n-prefix :}
     n-name n-version + n-prefix + 1+ dup            \ total length
     allocate throw                                  \ receiving buffer
     swap

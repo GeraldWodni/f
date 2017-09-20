@@ -118,7 +118,7 @@
 
 \ join two paths
 : path-join ( c-addr1 n1 caddr2 n2 -- caddr3 n3 )
-    locals| n2 c-addr2 n1 c-addr1 |
+    {: c-addr1 n1 c-addr2 n2 :}
     n1 n2 + 1+ dup allocate throw >r
     c-addr1 r@ n1 cmove         \ 1st path
     [CHAR] / r@ n1 + c!         \ separator

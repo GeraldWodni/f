@@ -105,7 +105,7 @@ slines-max buffer: slines-buffer
 \ parse all headers and return content length
 : http-length ( s -- n-content-length )
     0
-    locals| length |
+    {: length :}
     begin
         dup header-name
         dup 0<>
