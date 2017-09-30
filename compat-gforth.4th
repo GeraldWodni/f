@@ -16,7 +16,7 @@ variable buffer-len         \ chars in receiving buffer
     2dup \ save host
     http-port open-socket >r
         s" GET " r@ write-socket    \ start get request
-        2swap r@ write-socket       \ send path 
+        2swap r@ write-socket       \ send path
         s\"  HTTP/1.1\r\nHost: " r@ write-socket
         r@ write-socket             \ send host
         s\" \r\nConnection: Close\r\n\r\n" r@ write-socket
@@ -30,7 +30,7 @@ include compat-common.4th
     dup http-status >r
 
     >r \ socket
-    
+
     r@ http-length
     dup allocate throw swap \ c-addr n-len
 

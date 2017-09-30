@@ -13,7 +13,8 @@ Step by step:
 2. Extract the archive
    `unzip current.zip`
 3. Use gforth to install *f* via *fget*.
-   `gforth f.4th`
+   * GForth > 0.7.3: `gforth compat-gforth.4th f.4th`
+   * GForth <= 0.7.3: `gforth legacy-gforth.4th compat-gforth.4th f.4th`
    **Inside Gforth:**
    `fget f x.x.x`
 4. Delete the extracted archive
@@ -29,7 +30,7 @@ As f is now a plain package, updating it to the latest version is as easy as typ
 list all packages
 
 ### `fsearch ( <parse-needle> -- )`
-list all packages which contain *needle* in their name or description 
+list all packages which contain *needle* in their name or description
 
 ### `finfo ( <parse-name> -- )`
 display information about a package
