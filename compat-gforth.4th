@@ -7,7 +7,7 @@
   ;
 [then]
 
-[undefined] match-or-end? [if]
+[undefined] undefined-value [if]
   12345 CONSTANT undefined-value
 [then]
 
