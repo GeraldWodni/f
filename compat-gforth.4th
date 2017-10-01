@@ -1,5 +1,6 @@
 \ HTTP client implementation for GForth
-\ (c)copyright 2015-2016 by Gerald Wodni <gerald.wodni@gmail.com>
+\ (c)copyright 2015-2017 by Gerald Wodni <gerald.wodni@gmail.com>,
+\   Rick Carlino <rick.carlino@gmail.com>
 
 [undefined] BUFFER: [if]
   : BUFFER: ( u "<name>" -- ; -- addr )
@@ -7,16 +8,12 @@
   ;
 [then]
 
-[undefined] undefined-value [if]
+[undefined] {: [if]
   12345 CONSTANT undefined-value
-[then]
 
-[undefined] match-or-end? [if]
   : match-or-end? ( c-addr1 u1 c-addr2 u2 -- f )
     2 PICK 0= >R COMPARE 0= R> OR ;
-[then]
 
-[undefined] scan-args [if]
   : scan-args
     \ 0 c-addr1 u1 -- c-addr1 u1 ... c-addrn un n c-addrn+1 un+1
     BEGIN
@@ -25,9 +22,7 @@
         2DUP S" :}" match-or-end? 0= WHILE
         ROT 1+ PARSE-NAME
     AGAIN THEN THEN THEN ;
-[then]
 
-[undefined] scan-locals [if]
   : scan-locals
     \ n c-addr1 u1 -- c-addr1 u1 ... c-addrn un n c-addrn+1 un+1
     2DUP S" |" COMPARE 0= 0= IF
@@ -40,25 +35,19 @@
         ROT 1+ PARSE-NAME
         POSTPONE undefined-value
     AGAIN THEN THEN ;
-[then]
 
-[undefined] scan-end [if]
   : scan-end ( c-addr1 u1 -- c-addr2 u2 )
     BEGIN
         2DUP S" :}" match-or-end? 0= WHILE
         2DROP PARSE-NAME
     REPEAT ;
-[then]
 
-[undefined] define-locals [if]
   : define-locals ( c-addr1 u1 ... c-addrn un n -- )
     0 ?DO
         (LOCAL)
     LOOP
     0 0 (LOCAL) ;
-[then]
 
-[undefined] {: [if]
   : {: ( -- )
     0 PARSE-NAME
     scan-args scan-locals scan-end
