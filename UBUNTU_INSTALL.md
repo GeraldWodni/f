@@ -14,4 +14,4 @@ make check
 (sudo) make install
 ```
 
-Your system is now ready for installation. See (README.md)[README.md].
+Your system is now ready for installation. See (README.md)[README.md] next.
