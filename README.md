@@ -8,16 +8,12 @@ It will be the only package with a cumbersome installation ;)
 
 Step by step:
 
-1. Download the [package](https://theforth.net/package/f/current.zip)
+1. Download the [package](https://theforth.net/package/f/current.zip):
    `wget https://theforth.net/package/f/current.zip`
-2. Extract the archive
-   `unzip current.zip`
-3. Use gforth to install *f* via *fget*.
-   `gforth f.4th`
-   **Inside Gforth:**
-   `fget f x.x.x`
-4. Delete the extracted archive
-   `rm -Rf f`
+2. Extract the archive: `unzip current.zip`
+3. Use gforth to install *f* via *fget*: `gforth compat-gforth.4th f.4th`
+4. **Inside Gforth:** `fget f x.x.x`
+4. Delete the extracted archive: `rm -Rf f`
 
 From now on you can interface with f just by including `forth-packages/f/x.x.x/f.4th`.
 
@@ -29,7 +25,7 @@ As f is now a plain package, updating it to the latest version is as easy as typ
 list all packages
 
 ### `fsearch ( <parse-needle> -- )`
-list all packages which contain *needle* in their name or description 
+list all packages which contain *needle* in their name or description
 
 ### `finfo ( <parse-name> -- )`
 display information about a package
