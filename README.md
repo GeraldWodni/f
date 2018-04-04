@@ -52,7 +52,7 @@ include the main file of a package (if one is defined)
 
 
 
-Read more about the version numbering scheme in the [package-guidlines](/guidelines)
+Read more about the version numbering scheme in the [package-guidlines](https://theforth.net/guidelines)
 
 
 ## Configuration
